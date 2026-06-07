@@ -1,4 +1,5 @@
-﻿using CopaHAS.Models;
+﻿using AppCopaHAS.Models.DTOs;
+using CopaHAS.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,6 +31,16 @@ namespace AppCopaHAS.Services
         {
             Jogo jogoInserido = await _request.PostAsync<Jogo>(_apiUrlBase, j, string.Empty);
             return jogoInserido;
+        }
+
+        public async Task<ObservableCollection<JogoDTO>> GetJogosDTOAsync()
+        {
+            string urlComplementar = string.Format("{0}", "/ObterTabela");
+
+            ObservableCollection<JogoDTO> lista =
+                await _request.GetAsync<ObservableCollection<JogoDTO>>(_apiUrlBase + urlComplementar, string.Empty);
+
+            return lista;
         }
 
 

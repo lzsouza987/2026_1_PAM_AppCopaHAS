@@ -174,6 +174,7 @@ namespace AppCopaHAS.ViewModels
                     
                     await Application.Current.MainPage.DisplayAlertAsync("Mensagem", "Dados salvos com sucesso!", "Ok");
                 }
+                await Shell.Current.GoToAsync("//tabela");
             }
             catch (Exception ex)
             {
@@ -229,6 +230,8 @@ namespace AppCopaHAS.ViewModels
                     .DisplayAlertAsync("Ops", ex.Message, "Detalhes" + ex.InnerException, "Ok");
             }
         }
+
+      
 
         //Próximos elementos da classe aqui.
 

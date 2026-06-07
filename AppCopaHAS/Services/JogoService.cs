@@ -25,6 +25,14 @@ namespace AppCopaHAS.Services
             
             return lista;
         }
+                
+        public async Task<Jogo> PostJogoAsync(Jogo j)
+        {
+            Jogo jogoInserido = await _request.PostAsync<Jogo>(_apiUrlBase, j, string.Empty);
+            return jogoInserido;
+        }
+
+
     }
 }
 

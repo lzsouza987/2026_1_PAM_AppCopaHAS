@@ -84,6 +84,43 @@ namespace AppCopaHAS.ViewModels
             }
         }
 
+        public async Task ObterJogadores2(int selecaoId)
+        {
+            try
+            {
+                var jogadoresApi = await _jogadorService.GetJogadoresAsync();
+                Jogadores.Clear();
+                string[] extensoes = { ".png", ".jpg", ".jpeg" };
+
+                foreach (var jogador in jogadoresApi.Where(x => x.SelecaoId == selecaoId))
+                {
+                    foreach (var extensao in extensoes)//Para verificar vários tipos de imagens
+                    {
+                        string fileName = $"{SelecaoSelecionada.Pais}-{jogador.Nome}{extensao}";
+                        var blobClient = new BlobClient(_conexaoAzureBlobStorage, _container, fileName);
+                        if (blobClient.Exists())
+                        {
+                            Byte[] fileBytes;
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                blobClient.OpenRead().CopyTo(ms);
+                                fileBytes = ms.ToArray();
+                            }
+                            jogador.Foto = fileBytes;
+                            break;//Quando imagem existe depois de copiada saí do looping de extensões
+                        }
+                    }
+                    Jogadores.Add(jogador);
+                }
+                OnPropertyChanged(nameof(Jogadores));
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage
+                    .DisplayAlertAsync("Ops", ex.Message, "Detalhes" + ex.InnerException, "Ok");
+            }
+        }
+
         private Selecao selecaoSelecionada;
         public Selecao SelecaoSelecionada
         {
@@ -94,7 +131,7 @@ namespace AppCopaHAS.ViewModels
                 OnPropertyChanged();
 
                 if (value != null)
-                    _ = ObterJogadores(value.Id);
+                    _ = ObterJogadores2(value.Id);
             }
         }
        
@@ -112,7 +149,8 @@ namespace AppCopaHAS.ViewModels
 
                 var extensao = Path.GetExtension(foto.FileName);
 
-                if (!string.Equals(extensao, ".png", StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(extensao, ".png", StringComparison.OrdinalIgnoreCase)
+                    && !string.Equals(extensao, ".jpg", StringComparison.OrdinalIgnoreCase))
                 {
                     await Application.Current.MainPage.DisplayAlertAsync(
                         "Formato inválido", "Selecione uma imagem PNG.", "OK");
@@ -124,7 +162,7 @@ namespace AppCopaHAS.ViewModels
                     return;
 
                 await using var stream = await foto.OpenReadAsync();        
-                string fileName = $"{SelecaoSelecionada.Pais}-{jogador.Nome}.png";//Criando nome da imagem
+                string fileName = $"{SelecaoSelecionada.Pais}-{jogador.Nome}{extensao}";//Criando nome da imagem
                 var blobClient = new BlobClient(_conexaoAzureBlobStorage, _container, fileName);
 
                 if (blobClient.Exists())//Verifica se tem arquivo com nome igual e remove caso exista.
@@ -135,7 +173,7 @@ namespace AppCopaHAS.ViewModels
                 await Application.Current.MainPage
                     .DisplayAlertAsync("Mensagem", "Imagem salva com sucesso.", "Ok");
 
-                _ = ObterJogadores(selecaoSelecionada.Id);//Atualizará os cards com a imagem salva.
+                _ = ObterJogadores2(selecaoSelecionada.Id);//Atualizará os cards com a imagem salva.
             }
             catch (Exception ex)
             {

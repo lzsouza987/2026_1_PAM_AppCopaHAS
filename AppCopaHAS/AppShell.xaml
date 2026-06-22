@@ -18,4 +18,12 @@
 
     <ShellContent Title="Jogadores" Route="jogadores"
         ContentTemplate="{DataTemplate jogadores:AlbumView}"/>
+
+    <ShellContent Title="Lista Jogadores" Route="listajogadores"
+    ContentTemplate="{DataTemplate jogadores:ListagemJogadorView}"/>
+
+    <ShellContent Title="Cadastro de Jogador" Route="cadastrojogador"
+    ContentTemplate="{DataTemplate jogadores:CadastroJogadorView}"/>
 </Shell>
+
+    

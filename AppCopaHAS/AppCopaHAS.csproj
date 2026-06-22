@@ -73,7 +73,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\Jogadores\ListagemJogadorView.xaml.cs">
+	    <DependentUpon>ListagemJogadorView.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="Views\Jogadores\AlbumView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Jogadores\CadastroJogadorView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Jogadores\ListagemJogadorView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Jogos\CadastroJogoView.xaml">
